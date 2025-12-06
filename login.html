@@ -108,13 +108,13 @@ a{
 
 <script type="module">
 /* ===========================
-      CONFIGURAÇÃO FIREBASE
+      CONFIG FIREBASE
    =========================== */
 const firebaseConfig = {
   apiKey: "AIzaSyAcVPgUHbL4N9U1-H68klmGKWQF-YGleyc",
   authDomain: "vastbitloud-2872a.firebaseapp.com",
   projectId: "vastbitloud-2872a",
-  storageBucket: "vastbitloud-2872a.appspot.com",  // ✅ CORRIGIDO
+  storageBucket: "vastbitloud-2872a.appspot.com",  // ok
   messagingSenderId: "952931184412",
   appId: "1:952931184412:web:ee2a0e38826c30dd0cd4d9",
   measurementId: "G-KWVQ0CFHW2"
@@ -125,6 +125,7 @@ import { getFirestore, collection, addDoc } from "https://www.gstatic.com/fireba
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 
 /* ===========================
       FUNÇÃO DE ALERTA
@@ -138,8 +139,9 @@ function showMessage(msg, ok=false){
   setTimeout(()=> d.remove(),2500);
 }
 
+
 /* ===========================
-      TROCAR TELA LOGIN/REG
+      TROCAR TELA
    =========================== */
 const loginBox = document.getElementById('loginBox');
 const registerBox = document.getElementById('registerBox');
@@ -154,15 +156,18 @@ document.getElementById('linkShowLogin').onclick = () => {
   loginBox.classList.remove('hidden');
 };
 
+
 /* ===========================
-   PRÉ-PREENCHER CÓDIGO DO LINK
+  LER PARAMETROS DA URL
    =========================== */
 const params = new URLSearchParams(window.location.search);
-const prefillCodigo = params.get('codigo') || params.get('invite');
+const next = params.get("next");
+const preCodigo = params.get("codigo") || params.get("invite");
 
-if(prefillCodigo){
-  document.getElementById('inviteCodeReg').value = prefillCodigo;
+if(preCodigo){
+  document.getElementById("inviteCodeReg").value = preCodigo;
 }
+
 
 /* ===========================
          REGISTRO
@@ -186,7 +191,6 @@ document.getElementById('btnRegister').onclick = async () => {
   localStorage.setItem("vast_userdata", JSON.stringify(localData));
   localStorage.setItem("vast_logged", "1");
 
-  /* SALVAR NO FIRESTORE APENAS SE USOU CÓDIGO */
   if(invitedBy){
     try{
       await addDoc(collection(db, "teams"), {
@@ -197,7 +201,7 @@ document.getElementById('btnRegister').onclick = async () => {
         createdAt: Date.now()
       });
     } catch(e){
-      console.warn("Erro ao salvar team:", e);
+      console.warn("Erro Firestore:", e);
     }
   }
 
@@ -210,25 +214,27 @@ document.getElementById('btnRegister').onclick = async () => {
 
 
 /* ===========================
-          LOGIN
+           LOGIN
    =========================== */
 document.getElementById('btnLogin').onclick = () => {
+
   const phone = document.getElementById('phoneLogin').value.trim();
   const pass = document.getElementById('passLogin').value.trim();
 
   const stored = JSON.parse(localStorage.getItem("vast_userdata") || "null");
 
   if(stored && phone === stored.phone && pass === stored.pass){
+
     localStorage.setItem("vast_logged","1");
 
     showMessage("Login realizado!", true);
 
-    const next = params.get("next");
-
     setTimeout(()=>{
+
       if(next === "equipe") window.location.href = "equipe.html";
       else if(next === "perfil") window.location.href = "perfil.html";
       else window.location.href = "index.html";
+
     },900);
 
   } else {
@@ -237,15 +243,27 @@ document.getElementById('btnLogin').onclick = () => {
 };
 
 
+
 /* ===========================
-     AUTO-LOGIN NO CARREGAR
+     AUTO-LOGIN CORRIGIDO
    =========================== */
 window.addEventListener("load", () => {
+
   const logged = localStorage.getItem("vast_logged");
-  if(logged === "1"){
-    const next = params.get("next");
-    if(next === "equipe") window.location.href = "equipe.html";
-    else if(next === "perfil") window.location.href = "perfil.html";
+
+  if (logged === "1") {
+
+      if(next === "equipe"){
+          window.location.href = "equipe.html";
+          return;
+      }
+
+      if(next === "perfil"){
+          window.location.href = "perfil.html";
+          return;
+      }
+
+      window.location.href = "index.html";
   }
 });
 </script>
