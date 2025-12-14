@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Super Full Pro — Magaxia (Admin v3)</title>
+
+  <!-- Bootstrap 5 + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #f5f8fb;
+      --card: #ffffff;
+      --muted: #6c757d;
+      --primary: #0d6efd;
+      --danger: #dc3545;
+      --accent: #0ea5a4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(180deg, #eef7ff, #f8fcff);
+      margin: 0;
+      color: #10303a;
+    }
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container-root {
+      display: flex;
+      gap: 18px;
+      padding: 18px;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #e6f7ff, #dff6ff);
+      border-radius: 12px;
+      padding: 18px;
+      height: calc(100vh - 36px);
+      overflow: auto;
+      box-shadow: 0 8px 30px rgba(2, 6, 23, 0.06);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .brand .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+    }
+    .navlink {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      color: #073040;
+      text-decoration: none;
+      margin-bottom: 6px;
+    }
+    .navlink.active {
+      background: rgba(1, 87, 155, 0.09);
+      border-left: 4px solid var(--primary);
+    }
+    .sidebar .small-muted {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: var(--card);
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+      margin-bottom: 14px;
+    }
+    .header .left {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .header .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .search-input {
+      min-width: 260px;
+      max-width: 520px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+    }
+    .kpi {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .kpi .num {
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .table-small td,
+    .table-small th {
+      padding: .45rem .6rem;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .small-muted {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .badge-flag {
+      background: #ff6b6b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .footer-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      border-radius: 12px;
+    }
+
+    /* Dark theme */
+    .dark body {
+      background: linear-gradient(180deg, #021021, #061826);
+      color: #dbeef7;
+    }
+    .dark .sidebar {
+      background: linear-gradient(180deg, #042c3a, #033544);
+    }
+    .dark .card {
+      background: #062833;
+      color: #d8f0f4;
+    }
+    .dark .header {
+      background: #05272f;
+      color: #d8f0f4;
+    }
+    .dark .navlink {
+      color: #bfe6ea;
+    }
+    .dark .small-muted {
+      color: #9fd9e0;
+    }
+
+    @media (max-width: 900px) {
+      .container-root {
+        flex-direction: column;
+        padding: 12px;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+      .search-input {
+        min-width: 150px;
+        max-width: 250px;
+      }
+    }
+
+    #recarga-msg {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      display: none;
+    }
+    .recarga-success { background: #d4edda; color: #155724; }
+    .recarga-error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="container-root">
+      <aside class="sidebar" aria-label="Navegação">
+        <div class="brand">
+          <div class="logo">MGX</div>
+          <div>
+            <div style="font-weight:700">ADMIN MAGAXIA</div>
+            <div class="small-muted">Painel Super Full Pro — v3</div>
+          </div>
+        </div>
+
+        <div class="small-muted">Seções</div>
+        <nav id="navlist" class="mb-3">
+          <a href="#" data-sec="dash" class="navlink active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+          <a href="#" data-sec="users" class="navlink"><i class="bi bi-people"></i> Usuários</a>
+          <a href="#" data-sec="produtos" class="navlink"><i class="bi bi-box-seam"></i> Produtos</a>
+          <a href="#" data-sec="ativos" class="navlink"><i class="bi bi-graph-up"></i> Ativos</a>
+          <a href="#" data-sec="carteira" class="navlink"><i class="bi bi-wallet2"></i> Carteira</a>
+          <a href="#" data-sec="recarga" class="navlink"><i class="bi bi-currency-dollar"></i> Recarga de Saldo</a>
+          <a href="#" data-sec="equipe" class="navlink"><i class="bi bi-people-fill"></i> Equipe</a>
+          <a href="#" data-sec="logs" class="navlink"><i class="bi bi-file-text"></i> Logs</a>
+        </nav>
+
+        <div class="small-muted">Operações</div>
+        <div class="mt-2 controls">
+          <button id="btn-reset" class="btn btn-outline-danger btn-sm">Reset DB</button>
+          <button id="btn-import" class="btn btn-outline-primary btn-sm">Importar JSON</button>
+          <button id="btn-export" class="btn btn-outline-success btn-sm">Exportar CSV</button>
+        </div>
+
+        <div class="footer-note mt-3">
+          2FA: ativado (simulado)<br />
+          Logs & métricas: local
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="header">
+          <div class="left">
+            <div style="font-weight:700">Painel Administrativo</div>
+            <div class="small-muted">Magaxia — Administração central</div>
+          </div>
+
+          <div class="actions">
+            <input id="globalSearch" class="form-control form-control-sm search-input" placeholder="Buscar usuários, produtos, ativos..." />
+            <div class="btn-group">
+              <button id="themeToggle" class="btn btn-sm btn-outline-secondary" title="Alternar tema"><i class="bi bi-moon-stars"></i></button>
+              <button id="open-2fa" class="btn btn-sm btn-outline-info" title="2FA / OTP (simulado)"><i class="bi bi-shield-lock"></i></button>
+              <button id="open-create-user" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> Novo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard -->
+        <section id="dash" class="sec">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="card">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="small-muted">Resumo</div>
+                    <div class="kpi mt-2"><div class="num" id="k-users">0</div><div class="small-muted">Usuários</div></div>
+                    <div class="kpi mt-1"><div class="num" id="k-ativos">0</div><div class="small-muted">Ativos</div></div>
+                  </div>
+                  <canvas id="miniChart" width="180" height="120"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="card">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="small-muted">Últimas ações</div>
+                    <div id="recent-actions" style="max-height:120px;overflow:auto;margin-top:8px"></div>
+                  </div>
+                  <div class="text-end">
+                    <div class="small-muted">Métricas</div>
+                    <div id="metric-count" style="font-weight:700;font-size:18px">0 eventos</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div><b>Atividades recentes</b></div>
+                  <div class="small-muted">Use busca global para filtrar</div>
+                </div>
+                <div id="activity-list" style="max-height:220px;overflow:auto"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Usuários -->
+        <section id="users" class="sec" style="display:none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5>Usuários</h5>
+              <div class="small-muted">Gerencie contas, saldos e bloqueios</div>
+            </div>
+            <div class="controls">
+              <select id="usersPerPage" class="form-select form-select-sm">
+                <option value="5">5 / página</option>
+                <option value="10" selected>10 / página</option>
+                <option value="20">20 / página</option>
+              </select>
+              <button id="btn-export-users" class="btn btn-sm btn-outline-success">Exportar CSV</button>
+              <button id="btn-import-users" class="btn btn-sm btn-outline-primary">Importar JSON</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="table table-small mb-0">
+                <thead>
+                  <tr>
+                    <th>#</th><th>Nome</th><th>Código</th><th>Telefone</th><th>Saldo</th><th>Status</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+
+            <div class="p-2 d-flex justify-content-between align-items-center">
+              <div class="small-muted" id="users-info">—</div>
+              <div>
+                <button id="prevUsers" class="btn btn-sm btn-outline-secondary">Anterior</button>
+                <button id="nextUsers" class="btn btn-sm btn-outline-secondary">Próximo</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="produtos" class="sec" style="display:none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div><h5>Produtos</h5><div class="small-muted">Catálogo e preço</div></div>
+            <button id="btn-new-product" class="btn btn-sm btn-primary">Novo Produto</button>
+          </div>
+          <div id="prod-list" class="card">Seção de Produtos (em desenvolvimento)</div>
+        </section>
+
+        <section id="ativos" class="sec" style="display:none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div><h5>Ativos</h5><div class="small-muted">Investimentos e alocações</div></div>
+            <button id="btn-new-ativo" class="btn btn-sm btn-primary">Novo Ativo</button>
+          </div>
+          <div id="ativos-list" class="card">Seção de Ativos (em desenvolvimento)</div>
+        </section>
+
+        <section id="carteira" class="sec" style="display:none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div><h5>Carteira / Saques</h5><div class="small-muted">Gerencie solicitações de saque</div></div>
+          </div>
+          <div id="saques-list" class="card">Seção de Saques (em desenvolvimento)</div>
+        </section>
+
+        <!-- ✨ SEÇÃO DE RECARGA COM 2FA -->
+        <section id="recarga" class="sec" style="display:none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5>Recarga de Saldo</h5>
+              <div class="small-muted">Adicionar saldo à carteira de um usuário (requer 2FA)</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="mb-3">
+              <label for="usuario-recarga" class="form-label">Selecionar Usuário</label>
+              <select id="usuario-recarga" class="form-select">
+                <option value="">— Escolha um usuário —</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="senha-adm" class="form-label">Senha de Administrador</label>
+              <input type="password" class="form-control" id="senha-adm" placeholder="Digite a senha">
+            </div>
+            <div class="mb-3">
+              <label for="valor-recarga" class="form-label">Valor (ex: 100,50)</label>
+              <input type="text" class="form-control" id="valor-recarga" placeholder="Ex: 50,00">
+            </div>
+            <div class="mb-3">
+              <label for="otp-recarga" class="form-label">Código 2FA (OTP)</label>
+              <input type="text" class="form-control" id="otp-recarga" placeholder="Digite o código OTP gerado">
+            </div>
+            <button id="btn-recarregar-saldo" class="btn btn-primary w-100">Adicionar Saldo</button>
+            <div id="recarga-msg" class="mt-3"></div>
+          </div>
+        </section>
+
+        <section id="equipe" class="sec" style="display:none">
+          <div class="card">
+            <div><h5>Equipe</h5><div class="small-muted">Carregado externamente (simulação Firestore)</div></div>
+            <div id="team-list" style="margin-top:8px">Dados da equipe (simulados)</div>
+          </div>
+        </section>
+
+        <section id="logs" class="sec" style="display:none">
+          <div class="card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div><h5>Logs & Auditoria</h5><div class="small-muted">Registros locais de ações sensíveis</div></div>
+              <button id="btn-clear-logs" class="btn btn-sm btn-outline-danger">Limpar logs</button>
+            </div>
+            <div id="logs-list" style="max-height:420px;overflow:auto"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toastPlace"></div>
+
+    <!-- Modal Usuário -->
+    <div class="modal fade" id="modal-user" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Criar / Editar Usuário</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-user">
+              <input type="hidden" id="u-id" />
+              <div class="mb-2">
+                <label class="form-label">Nome</label>
+                <input id="u-name" class="form-control" required />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Código</label>
+                <input id="u-code" class="form-control" required />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Telefone</label>
+                <input id="u-phone" class="form-control" />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Saldo (R$)</label>
+                <input id="u-balance" class="form-control" type="number" step="0.01" value="0" />
+              </div>
+              <div class="form-check">
+                <input id="u-blocked" class="form-check-input" type="checkbox" />
+                <label class="form-check-label">Bloqueado</label>
+              </div>
+              <div class="mt-2 small-muted">Campos validados localmente</div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="del-user" class="btn btn-outline-danger me-auto" style="display:none">Remover</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="save-user" class="btn btn-primary">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Confirmação -->
+    <div class="modal fade" id="modal-confirm" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body" id="confirm-body"></div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="confirm-ok" class="btn btn-danger">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2FA -->
+    <div class="modal fade" id="modal-2fa" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">2FA — OTP (simulado)</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="small-muted">Gerar/validar OTP local (simulação para teste)</div>
+            <div class="mt-2">
+              <button id="gen-otp" class="btn btn-sm btn-outline-primary">Gerar OTP</button>
+              <div id="otp-code" class="mt-2" style="font-weight:700"></div>
+            </div>
+            <div class="mt-3">
+              <label class="form-label">Validar OTP</label>
+              <input id="otp-verify" class="form-control" placeholder="Digite o código OTP..." />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button id="verify-otp" class="btn btn-primary">Validar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Estado inicial
+    let users = JSON.parse(localStorage.getItem('magaxia-users')) || [
+      { id: 1, name: "Ana Silva", code: "A001", phone: "(11) 98765-4321", balance: 1250.75, blocked: false },
+      { id: 2, name: "Carlos Mendes", code: "C002", phone: "(21) 91234-5678", balance: 890.00, blocked: true },
+      { id: 3, name: "Beatriz Costa", code: "B003", phone: "(31) 99988-7766", balance: 3400.50, blocked: false },
+      { id: 4, name: "Diego Alves", code: "D004", phone: "(41) 98877-6655", balance: 0.00, blocked: false },
+      { id: 5, name: "Eliane Rocha", code: "E005", phone: "(51) 97766-5544", balance: 5200.00, blocked: false }
+    ];
+    let logs = JSON.parse(localStorage.getItem('magaxia-logs')) || [];
+    let currentSection = 'dash';
+    let currentPage = 1;
+    let usersPerPage = 10;
+    let darkMode = localStorage.getItem('darkMode') === 'true';
+    let otpCode = '';
+    const SENHA_ADM = "magaxia123";
+    const TWO_FACTOR_ENABLED = true; // ← Ativar/desativar 2FA globalmente
+
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      document.getElementById('themeToggle').innerHTML = '<i class="bi bi-brightness-high"></i>';
+    }
+
+    // Toast
+    function showToast(msg, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast align-items-center text-bg-${type} border-0`;
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">${msg}</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+      document.getElementById('toastPlace').appendChild(toast);
+      new bootstrap.Toast(toast, { delay: 3000 }).show();
+      toast.addEventListener('hidden.bs.toast', () => toast.remove());
+    }
+
+    // Navegação
+    document.querySelectorAll('.navlink').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.navlink').forEach(el => el.classList.remove('active'));
+        link.classList.add('active');
+        currentSection = link.dataset.sec;
+        document.querySelectorAll('.sec').forEach(s => s.style.display = 'none');
+        document.getElementById(currentSection).style.display = 'block';
+        if (currentSection === 'users') loadUsersPage();
+        if (currentSection === 'logs') renderLogs();
+        if (currentSection === 'recarga') loadUsuariosRecarga();
+      });
+    });
+
+    // Tema
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      darkMode = !darkMode;
+      localStorage.setItem('darkMode', darkMode);
+      document.documentElement.classList.toggle('dark');
+      document.getElementById('themeToggle').innerHTML = darkMode
+        ? '<i class="bi bi-brightness-high"></i>'
+        : '<i class="bi bi-moon-stars"></i>';
+    });
+
+    // Mini gráfico
+    const ctx = document.getElementById('miniChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        datasets: [{
+          label: 'Atividade',
+          data: [12, 19, 15, 22, 18, 25],
+          borderColor: '#0d6efd',
+          backgroundColor: 'rgba(13,110,253,0.1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { x: { display: false }, y: { display: false, beginAtZero: true } },
+        maintainAspectRatio: false
+      }
+    });
+
+    // Logs util
+    function logAction(action, user = 'Sistema') {
+      const entry = { action, user, timestamp: new Date().toLocaleString('pt-BR') };
+      logs.unshift(entry);
+      if (logs.length > 100) logs = logs.slice(0, 100);
+      localStorage.setItem('magaxia-logs', JSON.stringify(logs));
+    }
+
+    // Atualizar dashboard
+    function updateDashboard() {
+      document.getElementById('k-users').textContent = users.length;
+      document.getElementById('k-ativos').textContent = '42';
+      document.getElementById('metric-count').textContent = `${logs.length} eventos`;
+
+      const recent = logs.slice(0, 3).map(log => 
+        `<div class="small-muted">${log.action} • ${log.user}</div>`
+      ).join('') || '<div class="small-muted">Nenhuma ação recente</div>';
+      document.getElementById('recent-actions').innerHTML = recent;
+
+      const activity = logs.slice(0, 5).map(log => 
+        `<div class="small-muted">${log.timestamp} — ${log.action}</div>`
+      ).join('') || '<div class="small-muted">Sem atividades</div>';
+      document.getElementById('activity-list').innerHTML = activity;
+    }
+
+    // Usuários
+    function loadUsersPage() {
+      const start = (currentPage - 1) * usersPerPage;
+      const end = start + usersPerPage;
+      const page = users.slice(start, end);
+
+      let html = '';
+      page.forEach((u, idx) => {
+        html += `
+          <tr>
+            <td>${start + idx + 1}</td>
+            <td>${u.name}</td>
+            <td><code>${u.code}</code></td>
+            <td>${u.phone || '—'}</td>
+            <td>R$ ${u.balance?.toFixed(2).replace('.', ',')}</td>
+            <td>${u.blocked ? '<span class="badge-flag">Bloqueado</span>' : '<span class="text-success">Ativo</span>'}</td>
+            <td><button class="btn btn-sm btn-outline-secondary edit-user" data-id="${u.id}">Editar</button></td>
+          </tr>
+        `;
+      });
+      document.getElementById('users-tbody').innerHTML = html || '<tr><td colspan="7" class="text-center">Nenhum usuário</td></tr>';
+      document.getElementById('users-info').textContent = `Mostrando ${start + 1}–${Math.min(end, users.length)} de ${users.length} usuários`;
+
+      document.querySelectorAll('.edit-user').forEach(btn => {
+        btn.addEventListener('click', () => openUserModal(btn.dataset.id));
+      });
+    }
+
+    function openUserModal(id = null) {
+      const isNew = !id;
+      const user = id ? users.find(u => u.id == id) : null;
+      document.getElementById('u-id').value = id || '';
+      document.getElementById('del-user').style.display = id ? 'inline-block' : 'none';
+      if (user) {
+        document.getElementById('u-name').value = user.name;
+        document.getElementById('u-code').value = user.code;
+        document.getElementById('u-phone').value = user.phone || '';
+        document.getElementById('u-balance').value = user.balance || 0;
+        document.getElementById('u-blocked').checked = !!user.blocked;
+      } else {
+        document.getElementById('form-user').reset();
+        document.getElementById('u-balance').value = 0;
+      }
+      new bootstrap.Modal(document.getElementById('modal-user')).show();
+    }
+
+    document.getElementById('open-create-user').addEventListener('click', () => openUserModal());
+
+    document.getElementById('save-user').addEventListener('click', () => {
+      const id = document.getElementById('u-id').value;
+      const name = document.getElementById('u-name').value.trim();
+      const code = document.getElementById('u-code').value.trim();
+      const phone = document.getElementById('u-phone').value.trim();
+      const balance = parseFloat(document.getElementById('u-balance').value) || 0;
+      const blocked = document.getElementById('u-blocked').checked;
+
+      if (!name || !code) {
+        showToast('Preencha nome e código.', 'warning');
+        return;
+      }
+
+      if (id) {
+        const user = users.find(u => u.id == id);
+        if (user) {
+          user.name = name;
+          user.code = code;
+          user.phone = phone;
+          user.balance = balance;
+          user.blocked = blocked;
+          logAction(`Usuário atualizado: ${name}`, 'Admin');
+          showToast('Usuário atualizado com sucesso!', 'success');
+        }
+      } else {
+        const newId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
+        users.push({ id: newId, name, code, phone, balance, blocked });
+        logAction(`Novo usuário criado: ${name}`, 'Admin');
+        showToast('Usuário criado com sucesso!', 'success');
+      }
+
+      localStorage.setItem('magaxia-users', JSON.stringify(users));
+      if (currentSection === 'users') loadUsersPage();
+      updateDashboard();
+      bootstrap.Modal.getInstance(document.getElementById('modal-user')).hide();
+    });
+
+    document.getElementById('del-user').addEventListener('click', () => {
+      const id = document.getElementById('u-id').value;
+      const name = document.getElementById('u-name').value;
+      document.getElementById('confirm-body').textContent = `Tem certeza que deseja remover "${name}"? Esta ação é irreversível.`;
+      const confirmModal = new bootstrap.Modal(document.getElementById('modal-confirm'));
+      confirmModal.show();
+      document.getElementById('confirm-ok').onclick = () => {
+        users = users.filter(u => u.id != id);
+        localStorage.setItem('magaxia-users', JSON.stringify(users));
+        logAction(`Usuário removido: ${name}`, 'Admin');
+        showToast('Usuário removido.', 'info');
+        if (currentSection === 'users') loadUsersPage();
+        updateDashboard();
+        confirmModal.hide();
+        bootstrap.Modal.getInstance(document.getElementById('modal-user')).hide();
+      };
+    });
+
+    document.getElementById('nextUsers').addEventListener('click', () => {
+      if (currentPage * usersPerPage < users.length) {
+        currentPage++;
+        loadUsersPage();
+      }
+    });
+    document.getElementById('prevUsers').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        loadUsersPage();
+      }
+    });
+    document.getElementById('usersPerPage').addEventListener('change', (e) => {
+      usersPerPage = parseInt(e.target.value);
+      currentPage = 1;
+      loadUsersPage();
+    });
+
+    function renderLogs() {
+      document.getElementById('logs-list').innerHTML = logs.length
+        ? logs.map(log => `<div class="small-muted">${log.timestamp} — ${log.user}: ${log.action}</div>`).join('')
+        : '<div class="small-muted">Nenhum log registrado.</div>';
+    }
+
+    document.getElementById('btn-clear-logs').addEventListener('click', () => {
+      document.getElementById('confirm-body').textContent = 'Limpar todos os logs? Esta ação não pode ser desfeita.';
+      const confirmModal = new bootstrap.Modal(document.getElementById('modal-confirm'));
+      confirmModal.show();
+      document.getElementById('confirm-ok').onclick = () => {
+        logs = [];
+        localStorage.removeItem('magaxia-logs');
+        renderLogs();
+        updateDashboard();
+        showToast('Logs limpos.', 'info');
+        confirmModal.hide();
+      };
+    });
+
+    // 2FA Simulado
+    document.getElementById('open-2fa').addEventListener('click', () => {
+      new bootstrap.Modal(document.getElementById('modal-2fa')).show();
+    });
+
+    document.getElementById('gen-otp').addEventListener('click', () => {
+      otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById('otp-code').textContent = otpCode;
+      showToast('OTP gerado (válido por 1 minuto).', 'info');
+    });
+
+    document.getElementById('verify-otp').addEventListener('click', () => {
+      const input = document.getElementById('otp-verify').value;
+      if (input === otpCode) {
+        showToast('OTP válido! Acesso autorizado.', 'success');
+        otpCode = '';
+        document.getElementById('otp-verify').value = '';
+        bootstrap.Modal.getInstance(document.getElementById('modal-2fa')).hide();
+      } else {
+        showToast('OTP inválido. Tente novamente.', 'danger');
+      }
+    });
+
+    // ✨ RECARGA COM 2FA
+    function parseValor(valorStr) {
+      if (!valorStr) return NaN;
+      return parseFloat(valorStr.replace(/\./g, '').replace(',', '.'));
+    }
+
+    function showRecargaMessage(text, isError = false) {
+      const el = document.getElementById('recarga-msg');
+      el.textContent = text;
+      el.className = 'mt-3 ' + (isError ? 'recarga-error' : 'recarga-success');
+      el.style.display = 'block';
+      setTimeout(() => {
+        el.style.display = 'none';
+      }, 4000);
+    }
+
+    function loadUsuariosRecarga() {
+      const select = document.getElementById('usuario-recarga');
+      select.innerHTML = '<option value="">— Escolha um usuário —</option>';
+      users.forEach(user => {
+        const opt = document.createElement('option');
+        opt.value = user.id;
+        opt.textContent = `${user.name} (${user.code}) — R$ ${user.balance?.toFixed(2).replace('.', ',')}`;
+        select.appendChild(opt);
+      });
+    }
+
+    document.getElementById('btn-recarregar-saldo').addEventListener('click', () => {
+      const userId = document.getElementById('usuario-recarga').value;
+      const senha = document.getElementById('senha-adm').value.trim();
+      const valorStr = document.getElementById('valor-recarga').value.trim();
+      const otpInput = document.getElementById('otp-recarga').value.trim();
+
+      // Validar usuário
+      if (!userId) {
+        showRecargaMessage("Selecione um usuário!", true);
+        return;
+      }
+
+      // Validar senha
+      if (senha !== SENHA_ADM) {
+        showRecargaMessage("Senha incorreta!", true);
+        return;
+      }
+
+      // Validar valor
+      const valor = parseValor(valorStr);
+      if (isNaN(valor) || valor <= 0) {
+        showRecargaMessage("Valor inválido!", true);
+        return;
+      }
+
+      // Validar 2FA
+      if (TWO_FACTOR_ENABLED && otpInput !== otpCode) {
+        showRecargaMessage("Código 2FA inválido ou expirado!", true);
+        return;
+      }
+
+      // Encontrar usuário
+      const user = users.find(u => u.id == userId);
+      if (!user) {
+        showRecargaMessage("Usuário não encontrado!", true);
+        return;
+      }
+
+      // Aplicar recarga
+      user.balance = (user.balance || 0) + valor;
+      localStorage.setItem('magaxia-users', JSON.stringify(users));
+
+      // Feedback
+      const valorFmt = valor.toFixed(2).replace('.', ',');
+      const novoSaldoFmt = user.balance.toFixed(2).replace('.', ',');
+      showRecargaMessage(`✅ R$ ${valorFmt} adicionado a ${user.name}! Novo saldo: R$ ${novoSaldoFmt}`);
+      showToast(`Recarga de R$ ${valorFmt} para ${user.name} concluída com sucesso!`, 'success');
+
+      // Limpar campos
+      document.getElementById('senha-adm').value = '';
+      document.getElementById('valor-recarga').value = '';
+      document.getElementById('otp-recarga').value = '';
+      document.getElementById('usuario-recarga').value = '';
+
+      // Log e atualização
+      logAction(`Recarga de R$ ${valorFmt} para ${user.name} (2FA: ${TWO_FACTOR_ENABLED ? 'OK' : 'DESATIVADO'})`, 'Admin');
+      updateDashboard();
+
+      // Resetar OTP após uso
+      if (TWO_FACTOR_ENABLED) otpCode = '';
+    });
+
+    // Inicializar
+    updateDashboard();
+  </script>
+</body>
+</html>
